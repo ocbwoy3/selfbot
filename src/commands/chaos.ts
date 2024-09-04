@@ -37,7 +37,7 @@ client.on('messageCreate',async(message: Message)=>{
 })
 
 cmd.onExecute(async(p:CommandExecutionContext)=>{
-	useNotifySend = (hostname() === "ocbwoy3dotdev")
+	useNotifySend = (hostname() !== "ocbwoy3dotdev")
 	if (<boolean>chaosModeEnabled === true) {
 		chaosModeEnabled = false
 		await p.reply("disabled")
