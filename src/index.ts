@@ -20,6 +20,24 @@ client.on('messageCreate', async(message: Message) => {
 			const cmdName = message.content.substring(PREFIX.length).match(/^([a-zA-Z0-9]+)/);
 			if (!cmdName?.[0]) return;
 			const cmd = await getCommand(cmdName[0])
+			if (!cmd) return;
+			if (cmd.nsfw === true) {
+				if (!client.user.nsfwAllowed) {
+					await message.edit({
+						content: "This command is blocked due to account settings."
+					})
+					return;
+				}
+				// HOW THE FUCK DO I FETCH A CHANNEL'S NSFW STATUS
+				if (message.channel.type === "GUILD_TEXT" || message.channel.type === "GUILD_VOICE" || message.channel.type === "GUILD_NEWS" || message.channel.type === "GUILD_STAGE_VOICE") {
+					if (message.channel.nsfw === false) {
+						await message.edit({
+							content: "This command is blocked due to channel configuration."
+						})
+						return;
+					}
+				}
+			}
 			const exe = new CommandExecutionContext(message)
 			await exe._parseBeforeExecution()
 			await new Promise(resolve=>setTimeout(resolve,stupidTimeout)); // not taking any fucking chances
