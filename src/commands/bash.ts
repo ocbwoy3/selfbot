@@ -46,4 +46,16 @@ async function wtf(cmd:string): Promise<string> {
 	addCommand(cmd);
 })();
 
+(()=>{
+	let cmd = new Command("killproc","Kills the current process with code 0",[])
+	
+	cmd.onExecute(async(p:CommandExecutionContext)=>{
+		if (!p.message) return;
+		await p.reply(`Adios!`);
+		process.exit(0)
+	})
+	
+	addCommand(cmd);
+})();
+
 module.exports = null;

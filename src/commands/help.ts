@@ -3,7 +3,7 @@ import { Command, CommandExecutionContext } from "../lib/CommandAPI";
 import { addCommand, getAllCommands, getCommand } from "../lib/CommandRegistrate";
 import { PREFIX } from "../lib/Constants";
 
-let cmd = new Command("help","Shows helpful information about a command, or lists them.",[]);
+let cmd = new Command("help","Shows helpful information about a command, or lists them.",["cmd","cmds"]);
 
 cmd.onExecute(async(p:CommandExecutionContext)=>{
 	// console.log(p.args)
