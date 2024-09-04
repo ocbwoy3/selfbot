@@ -19,7 +19,7 @@ async function wtf(cmd:string): Promise<string> {
 	})
 };
 
-let cmd = new Command("chaos","Uses notify-send to notify you about EVERY SINGLE message that the Discord gateway sends. **DO NOT USE THIS AS IT ALLOWS ANYONE TO EXECUTE BASH CODE ON YOUR DEVICE**",[])
+let cmd = new Command("chaos","Logs every chat message the Discord gateway sends, if device hostname is ocbwoy3dotdev, otherwise sends a notification with notify-send",[])
 
 let chaosModeEnabled: boolean = false;
 let useNotifySend: boolean = false;

@@ -2,14 +2,15 @@ import { Message, MessageEditOptions, MessagePayload, ReplyMessageOptions, User 
 import { getCommand } from "./CommandRegistrate";
 import { PREFIX } from "./Constants";
 import { MessageOptions } from "child_process";
+import { client } from "./Client";
 
 export type MessageCommandArgument = string | User
 
 export async function parseArguments(message: Message): Promise<MessageCommandArgument[]> {
 	const regex = /<@!?(\d+)>|("[^"]*"|\S+)/g;
-	// console.log("THIS FUCKING SHIT!!",message.content)
-	let cx: string = message.content.substring(PREFIX.length).replace(/^([a-zA-Z0-9]+) /,'');
-	if (!cx.match(/a-zA-Z0-9/)) { return []; };
+	let cx: string = message.content.substring(PREFIX.length).replace(/^([a-zA-Z0-9]+) ?/,'');
+	// console.log(cx,"THIS FUCKING SHIT!!",cx.length,message.content)
+	if (cx.length===0) { return []; };
 	const matches = cx.matchAll(regex);
   
 	const args: MessageCommandArgument[] = [];
@@ -45,6 +46,10 @@ export class CommandExecutionContext {
 	private _alreadyReplied: boolean = false
 
 	public async reply(mp: string) {
+		if (this.message?.author.id !== client.user?.id) {
+			await this.message?.reply(mp);
+			return;
+		}
 		if (this._alreadyReplied) {
 			this._alreadyReplied = true;
 			await this.message?.reply(mp);

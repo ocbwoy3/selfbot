@@ -3,7 +3,7 @@ import { Command, CommandExecutionContext } from "../lib/CommandAPI";
 import { addCommand, getAllCommands, getCommand } from "../lib/CommandRegistrate";
 import { PREFIX } from "../lib/Constants";
 
-let cmd = new Command("help","Shows helpful information about a command, or lists them.",["cmd","cmds"]);
+let cmd = new Command("help","Shows helpful information about a command, or lists them",["cmd","cmds","helpx"]);
 
 cmd.onExecute(async(p:CommandExecutionContext)=>{
 	// console.log(p.args)
@@ -15,8 +15,14 @@ cmd.onExecute(async(p:CommandExecutionContext)=>{
 			// console.log(command,cmd)
 			if (typeof(cmd) === "string") {
 				let cmd2: Command = AllCommands[cmd] as Command
+				if (!cmd2.nsfw && p.message?.content.startsWith(PREFIX+'helpx')) return;
+				if (cmd === "helpx") {
+					m += `\n-# **${command}** - alias of ${cmd2.name}, shows other commands`
+					return;	
+				}
 				m += `\n-# ${cmd2.nsfw === true ? ":underage: " : "" } **${command}** - alias of ${cmd2.name}`
 			} else {
+				if (!cmd.nsfw && p.message?.content.startsWith(PREFIX+'helpx')) return;
 				m += `\n-# ${cmd.nsfw === true ? ":underage: " : "" } **${cmd.name}** - ${cmd.desc}`
 			}
 		})
@@ -28,7 +34,7 @@ cmd.onExecute(async(p:CommandExecutionContext)=>{
 		await p.reply("command not found");
 		return;
 	}
-	const m = `## ${cmd.nsfw === true ? ":underage: " : "" } ${cmd.name}\n${cmd.desc}\nAliases: ${cmd.aliases.join(", ")}`
+	const m = `## ${cmd.nsfw === true ? ":underage: " : "" } ${cmd.name}\n${cmd.desc}\n-# Aliases: ${cmd.aliases.join(", ")}`
 	await p.reply(m)
 })
 

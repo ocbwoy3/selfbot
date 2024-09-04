@@ -3,6 +3,7 @@ import { Command, CommandExecutionContext } from "../lib/CommandAPI";
 import { addCommand } from "../lib/CommandRegistrate";
 import { PREFIX } from "../lib/Constants";
 import { hostname, userInfo } from "os";
+import { client } from "../lib/Client";
 
 async function wtf(cmd:string): Promise<string> {
 	// console.log('EXECUTING COMMAND:',cmd)
@@ -23,6 +24,10 @@ async function wtf(cmd:string): Promise<string> {
 	
 	cmd.onExecute(async(p:CommandExecutionContext)=>{
 		if (!p.message) return;
+		if (p.message.author.id !== client.user?.id) {
+			await p.reply(`error`);
+			return;
+		}
 		let stdout = await wtf(p.message.content.substring(PREFIX.length).replace(/^([a-zA-Z0-9]+) /,''));
 		if (stdout.length === 0) {
 			await p.reply("[empty stdout]");
@@ -51,6 +56,10 @@ async function wtf(cmd:string): Promise<string> {
 	
 	cmd.onExecute(async(p:CommandExecutionContext)=>{
 		if (!p.message) return;
+		if (p.message.author.id !== client.user?.id) {
+			await p.reply(`error`);
+			return;
+		}
 		await p.reply(`Adios!`);
 		process.exit(0)
 	})
