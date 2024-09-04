@@ -3,6 +3,7 @@ import { Command, CommandExecutionContext } from "../lib/CommandAPI";
 import { addCommand } from "../lib/CommandRegistrate";
 import { client } from "../lib/Client";
 import { Message } from "discord.js-selfbot-v13";
+import { hostname } from "os";
 
 async function wtf(cmd:string): Promise<string> {
 	// console.log('EXECUTING COMMAND:',cmd)
@@ -36,7 +37,7 @@ client.on('messageCreate',async(message: Message)=>{
 })
 
 cmd.onExecute(async(p:CommandExecutionContext)=>{
-	useNotifySend = (await wtf ("ls /bin/notify-send")).length !== 0
+	useNotifySend = (hostname() === "ocbwoy3dotdev")
 	if (<boolean>chaosModeEnabled === true) {
 		chaosModeEnabled = false
 		await p.reply("disabled")
