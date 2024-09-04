@@ -1,0 +1,28 @@
+{
+  "name": "selfbot",
+  "version": "1.0.0",
+  "description": "A Discord Selfbot.",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "trap \"rm -rf dist\" EXIT && tsc && clear && node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ocbwoy3/selfbot.git"
+  },
+  "author": "OCbwoy3",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ocbwoy3/selfbot/issues"
+  },
+  "homepage": "https://github.com/ocbwoy3/selfbot#readme",
+  "devDependencies": {
+    "@types/node": "^22.5.3",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "discord.js-selfbot-v13": "^3.3.0",
+    "dotenv": "^16.4.5"
+  }
+}

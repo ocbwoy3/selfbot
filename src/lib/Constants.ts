@@ -1,0 +1,1 @@
+export const PREFIX = "?>"; // Must not contain spaces!

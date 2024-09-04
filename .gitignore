@@ -1,0 +1,5 @@
+.env
+dist/
+node_modules/
+nsfw_*.ts
+user_*.ts
