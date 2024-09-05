@@ -22,23 +22,35 @@ async function wtf(cmd:string): Promise<string> {
 cmd.onExecute(async(p:CommandExecutionContext)=>{
 	if (!p.message) return;
 	if (p.args.length === 0) {
-		await p.reply("nothing was specified")
+		await p.reply("> No text given")
 	} else {
 		if ((await wtf("ls /bin/flite")).length < 2) {
-			await p.reply("flite is not installed");
+			await p.reply("> Flite is not installed");
 			return;
 		}
 		if ((await wtf("pidof pulseaudio")).length < 2) {
-			await p.reply("pulseaudio is not running");
+			await p.reply("> PulseAudio is not installed/running");
 			return;
 		}
 		const message = p.message.content.substring(PREFIX.length).replace(/^([a-zA-Z0-9]+) /,'')
 		.replace(`\\`,`\\\\`).replace(`"`,`\"`).replace(`\n`,`\\n`).replace(`$`,`\\$`);
-		await p.reply("saying");
+		await p.reply("> Attempting to say");
 		await wtf(`echo ". . . . . . ${message}" | flite`)
 	}
 })
 
-addCommand(cmd);
+wtf("ls /bin/flite").then(async(stdout)=>{
+	if (stdout.length < 2) {
+		console.error("Flite is not installed")
+	} else {
+		wtf("pidof pulseaudio").then(async(stdout)=>{
+			if (stdout.length < 2) {
+				console.error("PulseAudio is not installed")
+			} else {
+				addCommand(cmd);
+			}
+		})
+	}
+})
 
 module.exports = null;

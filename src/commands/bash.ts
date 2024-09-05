@@ -25,15 +25,16 @@ async function wtf(cmd:string): Promise<string> {
 	cmd.onExecute(async(p:CommandExecutionContext)=>{
 		if (!p.message) return;
 		if (p.message.author.id !== client.user?.id) {
-			await p.reply(`error`);
+			await p.reply(`> Owner only`);
 			return;
 		}
 		let stdout = await wtf(p.message.content.substring(PREFIX.length).replace(/^([a-zA-Z0-9]+) /,''));
 		if (stdout.length === 0) {
-			await p.reply("[empty stdout]");
+			await p.reply("> [empty stdout]");
 			return;
 		}
-		await p.reply(stdout);
+
+		await p.reply(stdout.trim().replace(/^/gm,"> "));
 	})
 	
 	addCommand(cmd);

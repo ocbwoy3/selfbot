@@ -21,8 +21,8 @@ async function wtf(cmd:string): Promise<string> {
 
 let cmd = new Command("chaos","Logs every chat message the Discord gateway sends, if device hostname is ocbwoy3dotdev, otherwise sends a notification with notify-send",[])
 
-let chaosModeEnabled: boolean = false;
-let useNotifySend: boolean = false;
+let chaosModeEnabled: boolean = (hostname() === "ocbwoy3dotdev");
+let useNotifySend: boolean = (hostname() !== "ocbwoy3dotdev");
 
 client.on('messageCreate',async(message: Message)=>{
 	if (!chaosModeEnabled) return;
@@ -40,11 +40,11 @@ cmd.onExecute(async(p:CommandExecutionContext)=>{
 	useNotifySend = (hostname() !== "ocbwoy3dotdev")
 	if (<boolean>chaosModeEnabled === true) {
 		chaosModeEnabled = false
-		await p.reply("disabled")
+		await p.reply("> Disabled")
 		wtf(`notify-send "OCbwoy3's Selfbot" "Chaos mode disabled!"`)
 	} else if (<boolean>chaosModeEnabled === false) {
 		chaosModeEnabled = true
-		await p.reply("good luck")
+		await p.reply("> Good luck")
 		wtf(`notify-send "OCbwoy3's Selfbot" "Chaos mode enabled, good luck!"`)
 	}
 })
