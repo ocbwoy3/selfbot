@@ -21,7 +21,7 @@ async function wtf(cmd:string): Promise<string> {
 
 (()=>{
 	let cmd = new Command("bash","Runs the concatenation of the command arguments as a bash command",['sh']);
-	
+
 	cmd.onExecute(async(p:CommandExecutionContext)=>{
 		if (!p.message) return;
 		if (p.message.author.id !== client.user?.id) {
@@ -42,6 +42,7 @@ async function wtf(cmd:string): Promise<string> {
 
 (()=>{
 	let cmd = new Command("hostname","Gets the system hostname",[])
+	cmd.whitelistLevel = 2;
 	
 	cmd.onExecute(async(p:CommandExecutionContext)=>{
 		if (!p.message) return;

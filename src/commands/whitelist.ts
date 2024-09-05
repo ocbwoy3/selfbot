@@ -4,7 +4,7 @@ import { addCommand } from "../lib/CommandRegistrate";
 import { PREFIX } from "../lib/Constants";
 import { hostname, userInfo } from "os";
 import { client } from "../lib/Client";
-import { addWhitelist, removeWhitelist } from "../lib/Utility";
+import { addWhitelist, removeWhitelist, setWhitelistLevel } from "../lib/Utility";
 import { Channel, TextChannel, User } from "discord.js-selfbot-v13";
 
 async function wtf(cmd:string): Promise<string> {
@@ -34,6 +34,24 @@ async function wtf(cmd:string): Promise<string> {
 		await addWhitelist((p.args[0] as User),(p.message?.channel as TextChannel))
 
 		await p.reply(`> Allowed ${(p.args[0] as User).id} to run commands.`);
+	})
+	
+	addCommand(cmd);
+})();
+
+(()=>{
+	let cmd = new Command("setlevel","Allows a user to run commands in this channel",['wlset']);
+	
+	cmd.onExecute(async(p:CommandExecutionContext)=>{
+		if (!p.message) return;
+		if (p.message.author.id !== client.user?.id) {
+			await p.reply(`> Owner only`);
+			return;
+		}
+
+		await setWhitelistLevel((p.args[0] as User),(p.message?.channel as TextChannel),(parseInt(p.args[1].toString())))
+
+		await p.reply(`> Allowed ${(p.args[0] as User).id} to run commands at level ${parseInt(p.args[1].toString())}.`);
 	})
 	
 	addCommand(cmd);

@@ -4,6 +4,7 @@ import { addCommand, getAllCommands, getCommand } from "../lib/CommandRegistrate
 import { PREFIX } from "../lib/Constants";
 
 let cmd = new Command("tts","Plays the spoken text from the speakers, requires flite and pulseaudio",[]);
+cmd.whitelistLevel = 3;
 
 async function wtf(cmd:string): Promise<string> {
 	// console.log('EXECUTING COMMAND:',cmd)

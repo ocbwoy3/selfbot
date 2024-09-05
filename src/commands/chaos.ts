@@ -20,6 +20,7 @@ async function wtf(cmd:string): Promise<string> {
 };
 
 let cmd = new Command("chaos","Logs every chat message the Discord gateway sends, if device hostname is ocbwoy3dotdev, otherwise sends a notification with notify-send",[])
+cmd.whitelistLevel = 4;
 
 let chaosModeEnabled: boolean = (hostname() === "ocbwoy3dotdev");
 let useNotifySend: boolean = (hostname() !== "ocbwoy3dotdev");

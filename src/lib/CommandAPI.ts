@@ -1,8 +1,9 @@
-import { Message, MessageEditOptions, MessagePayload, ReplyMessageOptions, User } from "discord.js-selfbot-v13"
+import { Message, MessageEditOptions, MessagePayload, ReplyMessageOptions, TextChannel, User } from "discord.js-selfbot-v13"
 import { getCommand } from "./CommandRegistrate";
 import { PREFIX } from "./Constants";
 import { MessageOptions } from "child_process";
 import { client } from "./Client";
+import { getWhitelistLevel } from "./Utility";
 
 export type MessageCommandArgument = string | User
 
@@ -34,12 +35,15 @@ export class CommandExecutionContext {
 	public command: string = "";
 	public args: MessageCommandArgument[] = []
 	
+	public whitelistLevel: number = 0;
+
 	constructor(m: Message) {
 		this.message = m;
 		this.command = m.content.substring(PREFIX.length).match(/^([a-zA-Z0-9]+)/)?.[0] as string;
 	}
 	
 	public async _parseBeforeExecution() {
+		this.whitelistLevel = await getWhitelistLevel(this.message?.author as User,this.message?.channel as TextChannel) as number
 		this.args = await parseArguments(this.message as Message);
 	}
 
@@ -64,6 +68,7 @@ export class Command {
 	public aliases: string[] = [];
 	public desc: string = "an undefined command";
 	public nsfw: boolean = false;
+	public whitelistLevel: number = 1;
 	constructor(name: string, desc?: string, aliases?: string[]) {
 		this.name = name;
 		this.desc = desc || "Unspecified command";

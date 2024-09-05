@@ -1,11 +1,11 @@
-import { ClientUser, Message, User } from "discord.js-selfbot-v13";
+import { ClientUser, Message, TextChannel, User } from "discord.js-selfbot-v13";
 import { configDotenv } from "dotenv";
 import { CommandExecutionContext } from "./lib/CommandAPI";
 import { PREFIX } from "./lib/Constants";
 import { getCommand } from "./lib/CommandRegistrate";
 import { loadAllCommands } from "./lib/CommandLoader";
 import { client } from "./lib/Client";
-import { isAllowed } from "./lib/Utility";
+import { getWhitelistLevel, isAllowed } from "./lib/Utility";
 import { exec } from "child_process";
 
 configDotenv();
@@ -36,15 +36,27 @@ client.on('messageCreate', async(message: Message) => {
 			if (!cmdName?.[0]) return;
 			const cmd = await getCommand(cmdName[0])
 			if (!cmd) return;
+			if ((await getWhitelistLevel(message.author,message.channel as TextChannel)) < cmd.whitelistLevel) {
+				if (message.author.id === client.user?.id) {
+					await message.edit({
+						content: `> Cannot run command. Required whitelistLevel is ${cmd.whitelistLevel}, yours is ${(await getWhitelistLevel(message.author,message.channel as TextChannel))}.`
+					})
+				} else {
+					await message.reply({
+						content: `> Cannot run command. Required whitelistLevel is ${cmd.whitelistLevel}, yours is ${(await getWhitelistLevel(message.author,message.channel as TextChannel))}.`
+					})
+				}
+				return;
+			}
 			if (cmd.nsfw === true) {
 				if (!(client.user as ClientUser).nsfwAllowed) {
 					if (message.author.id === client.user?.id) {
 						await message.edit({
-							content: "This command is blocked due to account settings."
+							content: "> This command is blocked due to account settings."
 						})
 					} else {
 						await message.reply({
-							content: "This command is blocked due to account settings."
+							content: "> This command is blocked due to account settings."
 						})
 					}
 					return;
@@ -54,11 +66,11 @@ client.on('messageCreate', async(message: Message) => {
 					if (message.channel.nsfw === false) {
 						if (message.author.id === client.user?.id) {
 							await message.edit({
-								content: "This command is blocked due to channel settings."
+								content: "> This command is blocked due to channel settings."
 							})
 						} else {
 							await message.reply({
-								content: "This command is blocked due to channel settings."
+								content: "> This command is blocked due to channel settings."
 							})
 						}
 						return;

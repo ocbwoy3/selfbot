@@ -6,14 +6,24 @@ export function escapeRegExp(string: string) {
     return string.replace(/(.)/g, '\\$&');
 }
 
-let selfbotWhitelist: {[user:string]: string} = {}
+let selfbotWhitelist: {[user:string]: number} = {}
 
-export async function addWhitelist(user:User,ch:Channel) {
-    selfbotWhitelist[user.id+ch.id] = ch.id
+export async function setWhitelistLevel(user:User,ch:Channel,wll:number): Promise<void> {
+    if (user.id === client.user?.id) return;
+    selfbotWhitelist[user.id+" "+ch.id] = wll
 }
 
-export async function removeWhitelist(user:User,ch:Channel) {
-    delete selfbotWhitelist[user.id+ch.id]
+export async function getWhitelistLevel(user:User,ch:Channel): Promise<number> {
+    if (user.id === client.user?.id) return Infinity;
+    return selfbotWhitelist[user.id+" "+ch.id]
+}
+
+export async function addWhitelist(user:User,ch:Channel): Promise<void> {
+    selfbotWhitelist[user.id+" "+ch.id] = 1
+}
+
+export async function removeWhitelist(user:User,ch:Channel): Promise<void> {
+    delete selfbotWhitelist[user.id+" "+ch.id]
 }
 
 export async function isAllowed(message: Message): Promise<boolean> {
@@ -21,9 +31,9 @@ export async function isAllowed(message: Message): Promise<boolean> {
         return true;
     }
 
-    if (selfbotWhitelist[message.author.id+message.channel.id]) {
-        const ch = selfbotWhitelist[message.author.id+message.channel.id]
-        if (message.channel.id === ch) {
+    if (selfbotWhitelist[message.author.id+" "+message.channel.id]) {
+        const ch = selfbotWhitelist[message.author.id+" "+message.channel.id]
+        if (ch > 0) {
             return true;
         }
         return false;
