@@ -1,0 +1,24 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:./dev.db"
+}
+
+model UserWhitelist {
+    id                String  @id @unique
+    discordUserId     String
+    admin             Boolean @default(false)
+    channelId         String? @unique
+    restrictToChannel Boolean @default(true)
+}
+
+model CommandWhitelist {
+    id                String  @id @unique @default(uuid())
+    discordUserId     String
+    commandName       String  @unique
+    channelId         String? @unique
+    restrictToChannel Boolean @default(true)
+}
