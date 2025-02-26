@@ -69,7 +69,7 @@ did:plc:zxldzh7s6no6zikwqpasixrp
 did:plc:z3yk2cflhmn6vmzo3f5ixqh4`.split("\n")
 
 export const agent = new BskyAgent({
-	service: process.env.BLUESKY_PASSWORD ? (process.env.ATPROTO_PDS || "https://bsky.social") : "https://api.bsky.app" // ATPROTO HACK!!!
+	service: process.env.BLUESKY_PASSWORD ? (process.env.ATPROTO_PDS || "https://bsky.social") : "https://api.bsky.app"
 })
 
 if (process.env.ATPROTO_DID && process.env.BLUESKY_PASSWORD) {
