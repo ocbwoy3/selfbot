@@ -11,7 +11,7 @@ import { clientCommands, commandAliases } from "./commandProto";
 type MessageCommandArgument = string | User | AnyChannel;
 
 export async function parseArguments(
-	message: Message
+	message: Message,
 ): Promise<MessageCommandArgument[]> {
 	const regex = /<((\@|\#)!?\d+)>|("[^"]*"|\S+)/g;
 	let cx: string = message.content
@@ -29,20 +29,20 @@ export async function parseArguments(
 				if (match[1].startsWith("@")) {
 					args.push(
 						await message.client.users.fetch(
-							match[1].replace(/[\@\#\!]/g, "")
-						)
+							match[1].replace(/[\@\#\!]/g, ""),
+						),
 					);
 				}
 				if (match[1].startsWith("#")) {
 					const ch = await message.client.channels.fetch(
-						match[1].replace(/[\@\#\!]/g, "")
+						match[1].replace(/[\@\#\!]/g, ""),
 					);
 					if (!ch) throw `Channel not exists: <${match[1]}>`;
 					args.push(ch);
 				}
 			} catch (error) {
 				console.error(
-					`Failed to fetch user/channel - ${match[1]}: ${error}`
+					`Failed to fetch user/channel - ${match[1]}: ${error}`,
 				);
 				args.push("null");
 			}
@@ -74,10 +74,15 @@ export async function handleCommand(message: Message): Promise<void> {
 	// if (args.length === 0) return;
 
 	try {
-		console.log(`${message.author.username} ran ${command.name} with args: [ ${args.join(", ")} ]`);
+		console.log(
+			`${message.author.username} ran ${command.name} with args: [ ${args.join(", ")} ]`,
+		);
 		await command.runCommand(message, args);
 	} catch (error) {
-		console.error(`${message.author.username} ${command.name} error: `, error);
+		console.error(
+			`${message.author.username} ${command.name} error: `,
+			error,
+		);
 	}
 
 	return;

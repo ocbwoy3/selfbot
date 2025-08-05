@@ -1,5 +1,5 @@
-import { BskyAgent } from "@atproto/api"
-import type { LabelerViewDetailed } from "@atproto/api/dist/client/types/app/bsky/labeler/defs"
+import { BskyAgent } from "@atproto/api";
+import type { LabelerViewDetailed } from "@atproto/api/dist/client/types/app/bsky/labeler/defs";
 
 export function assertAtprotoCredentials(): void | never {
 	// if (!process.env.ATPROTO_DID || !process.env.BLUESKY_PASSWORD) {
@@ -66,35 +66,71 @@ did:plc:p6eqp5xkulucs6ebeoqtveze
 did:plc:w6yx4bltuzdmiolooi4kd6zt
 did:plc:r5zogjmxhhn6v23dv47li6pc
 did:plc:zxldzh7s6no6zikwqpasixrp
-did:plc:z3yk2cflhmn6vmzo3f5ixqh4`.split("\n")
+did:plc:z3yk2cflhmn6vmzo3f5ixqh4`.split("\n");
 
 export const agent = new BskyAgent({
-	service: process.env.BLUESKY_PASSWORD ? (process.env.ATPROTO_PDS || "https://bsky.social") : "https://api.bsky.app" // ATPROTO HACK!!!
-})
+	service: process.env.BLUESKY_PASSWORD
+		? process.env.ATPROTO_PDS || "https://bsky.social"
+		: "https://api.bsky.app", // ATPROTO HACK!!!
+});
 
 if (process.env.ATPROTO_DID && process.env.BLUESKY_PASSWORD) {
 	await agent.login({
 		identifier: process.env.ATPROTO_DID,
-		password: process.env.BLUESKY_PASSWORD
-	})
+		password: process.env.BLUESKY_PASSWORD,
+	});
 }
 
-type LabelerPolicy = { labeler_did: string, labeler: string, serverity: string, name: string, description: string, id: string, blurs: boolean | string }
+type LabelerPolicy = {
+	labeler_did: string;
+	labeler: string;
+	serverity: string;
+	name: string;
+	description: string;
+	id: string;
+	blurs: boolean | string;
+};
 
 let LABELER_POLICIES: { [id: string]: LabelerPolicy } = {};
 
 if (Object.values(LABELER_POLICIES).length === 0) {
 	const labelers = await agent.app.bsky.labeler.getServices({
 		dids: LABELER_DIDS,
-		detailed: true
+		detailed: true,
 	});
-	labelers.data.views.forEach(v => {
+	labelers.data.views.forEach((v) => {
 		let p = v as LabelerViewDetailed;
-		(p.policies.labelValueDefinitions || []).forEach(l => {
-			LABELER_POLICIES[`${p.creator.did}/${l.identifier}`] = { labeler_did: p.creator.did, labeler: p.creator.displayName || p.creator.did, serverity: l.severity, name: l.locales[0].name, description: l.locales[0].description, id: l.identifier, blurs: l.blurs }
-		})
-		LABELER_POLICIES[`${p.creator.did}/!hide`] = { labeler_did: p.creator.did, labeler: p.creator.displayName || p.creator.did, serverity: "hide", name: "Content Blocked", description: "This content has been hidden by the moderators. This content has been labeled with the !hide global label value defined by the AT Protocol. ", id: "!hide", blurs: false }
-		LABELER_POLICIES[`${p.creator.did}/!warn`] = { labeler_did: p.creator.did, labeler: p.creator.displayName || p.creator.did, serverity: "warn", name: "Content Warning", description: "This content has received a general warning from moderators. This content has been labeled with the !warn global label value defined by the AT Protocol. ", id: "!warn", blurs: false }
+		(p.policies.labelValueDefinitions || []).forEach((l) => {
+			LABELER_POLICIES[`${p.creator.did}/${l.identifier}`] = {
+				labeler_did: p.creator.did,
+				labeler: p.creator.displayName || p.creator.did,
+				serverity: l.severity,
+				name: l.locales[0].name,
+				description: l.locales[0].description,
+				id: l.identifier,
+				blurs: l.blurs,
+			};
+		});
+		LABELER_POLICIES[`${p.creator.did}/!hide`] = {
+			labeler_did: p.creator.did,
+			labeler: p.creator.displayName || p.creator.did,
+			serverity: "hide",
+			name: "Content Blocked",
+			description:
+				"This content has been hidden by the moderators. This content has been labeled with the !hide global label value defined by the AT Protocol. ",
+			id: "!hide",
+			blurs: false,
+		};
+		LABELER_POLICIES[`${p.creator.did}/!warn`] = {
+			labeler_did: p.creator.did,
+			labeler: p.creator.displayName || p.creator.did,
+			serverity: "warn",
+			name: "Content Warning",
+			description:
+				"This content has received a general warning from moderators. This content has been labeled with the !warn global label value defined by the AT Protocol. ",
+			id: "!warn",
+			blurs: false,
+		};
 	});
 }
 

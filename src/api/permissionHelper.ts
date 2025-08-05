@@ -4,24 +4,27 @@ import { client, prisma } from "../constants";
 export async function isWhitelisted(
 	u: User,
 	command?: string,
-	channel?: TextChannel
+	channel?: TextChannel,
 ): Promise<boolean> {
 	if (u.id === client.user!.id) return true;
 	if (u.bot) return false;
 
-	const userWhitelist = await prisma.userWhitelist.findUnique({
+	const userWhitelistT = await prisma.userWhitelist.findMany({
 		where: {
-			discordUserId: u.id,
+			discordUserId: u.id
 		},
 	});
 
-	if (!userWhitelist) return false;
+	if (userWhitelistT.length === 0) return false;
+	const userWhitelist = userWhitelistT[0];
+
+	if (userWhitelist.admin === true) return true;
 
 	if (command) {
 		const commandWhitelist = await prisma.commandWhitelist.findUnique({
 			where: {
 				discordUserId: u.id,
-				commandName: command
+				commandName: command,
 			},
 		});
 

@@ -3,17 +3,20 @@ import type { AnyChannel, Message, User } from "discord.js-selfbot-v13";
 export type MessageCommandArgument = string | User | AnyChannel;
 
 export abstract class Command {
-	syntax: string
+	syntax: string;
 	description: string | undefined = undefined;
 
-	constructor(public name: string, public aliases: string[] = []) {
-		this.syntax = name
-		if (!this.description) this.description = `The '${name}' command.`
+	constructor(
+		public name: string,
+		public aliases: string[] = [],
+	) {
+		this.syntax = name;
+		if (!this.description) this.description = `The '${name}' command.`;
 	}
 
 	public async runCommand(
 		message: Message,
-		args: MessageCommandArgument[]
+		args: MessageCommandArgument[],
 	): Promise<any> {}
 }
 

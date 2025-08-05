@@ -6,20 +6,20 @@ import { client, prisma } from "@/constants";
 class UnwhitelistCommand extends Command {
 	constructor() {
 		super("unwhitelist", ["unwl", "uwl", "unwlremove"]);
-		this.syntax = "unwhitelist <user>"
+		this.syntax = "unwhitelist <user>";
+		this.description = "unwhitelists someone from the bot";
 	}
 
 	public async runCommand(
 		message: Message,
-		args: MessageCommandArgument[]
+		args: MessageCommandArgument[],
 	): Promise<any> {
-
 		if (message.author.id !== client.user!.id) return;
 
 		// 1: user
 		if (!["User", "ClientUser"].includes(args[0].constructor.name)) {
 			await message.reply(
-				`> \`args[0]\` is \`${args[0].constructor.name}\` but expected \`User\` or \`ClientUser\``
+				`> \`args[0]\` is \`${args[0].constructor.name}\` but expected \`User\` or \`ClientUser\``,
 			);
 			return;
 		}
@@ -28,6 +28,7 @@ class UnwhitelistCommand extends Command {
 		await prisma.userWhitelist.delete({
 			where: {
 				discordUserId: user.id,
+				channelId: undefined,
 			},
 		});
 

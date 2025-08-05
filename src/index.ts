@@ -9,7 +9,7 @@ configDotenv();
 
 client.on("ready", async () => {
 	console.log(
-		`Logged in as ${client.user!.displayName} (${client.user!.id})`
+		`Logged in as ${client.user!.displayName} (${client.user!.id})`,
 	);
 });
 
@@ -20,14 +20,14 @@ client.on("messageCreate", async (m: Message) => {
 async function loadFilesFromDir(dir: string) {
 	const path = join(__dirname, dir);
 	const files = readdirSync(path, { recursive: true }).filter((file) => {
-		const f = (file as any as string)
-		return f.endsWith(".ts") && !f.endsWith(".m.ts")
+		const f = file as any as string;
+		return f.endsWith(".ts") && !f.endsWith(".m.ts");
 	});
 
 	for (const file of files) {
 		const filePath = join(path, file as any as string);
 		try {
-			await import(filePath)
+			await import(filePath);
 			console.log(`Loaded file ${dir}/${file}`);
 		} catch (error) {
 			console.error(`Failed to load command ${file}:`, error);
